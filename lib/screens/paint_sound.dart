@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
@@ -19,6 +19,7 @@ class _PaintSoundState extends State<PaintSound> {
   Color selectedColor = Color(0xFFFF6B6B);
   bool isPlaying = false;
   bool isDrawing = false;
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   // Colores con diferentes tipos de sonido
   final Map<Color, Map<String, dynamic>> colorSounds = {
@@ -34,46 +35,41 @@ class _PaintSoundState extends State<PaintSound> {
 
   @override
   void dispose() {
+    audioPlayer.dispose();
     super.dispose();
   }
 
-  // Reproducir sonido según el color usando flutter_beep
+  // Reproducir sonido según el color usando vibración y sonidos del sistema
   void playSound(Color color) async {
     try {
       String soundType = colorSounds[color]?['soundType'] ?? 'mid1';
       
       switch (soundType) {
         case 'high1':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_HIGH_PBX_L);
-          break;
         case 'high2':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_HIGH_PBX_S_X4);
+          HapticFeedback.lightImpact();
+          SystemSound.play(SystemSoundType.click);
           break;
         case 'mid1':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_MED_PBX_L);
-          break;
         case 'mid2':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_MED_PBX_S_X4);
-          break;
         case 'mid3':
-          FlutterBeep.beep();
+          HapticFeedback.mediumImpact();
+          SystemSound.play(SystemSoundType.click);
           break;
         case 'low1':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_LOW_PBX_L);
-          break;
         case 'low2':
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_LOW_PBX_S_X4);
+          HapticFeedback.heavyImpact();
+          SystemSound.play(SystemSoundType.click);
           break;
         case 'bass':
           HapticFeedback.heavyImpact();
-          FlutterBeep.playSysSound(AndroidSoundIDs.TONE_CDMA_ABBR_ALERT);
+          await Future.delayed(Duration(milliseconds: 50));
+          HapticFeedback.heavyImpact();
           break;
         default:
-          FlutterBeep.beep();
+          HapticFeedback.mediumImpact();
       }
     } catch (e) {
-      // Fallback a vibración
-      HapticFeedback.lightImpact();
       print('Sound error: $e');
     }
   }
