@@ -1,0 +1,39 @@
+name: music_maker
+description: Una aplicación musical interactiva con múltiples modos de composición.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=3.13.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Audio packages con versiones específicas
+  audioplayers: ^6.1.0
+  just_audio: ^0.9.36
+  
+  # UI y utilidades
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Assets para sonidos (opcional)
+  # assets:
+  #   - assets/sounds/
+  
+  # Configuración de audio para Android
+android:
+  permissions:
+    - android.permission.RECORD_AUDIO
+    - android.permission.MODIFY_AUDIO_SETTINGS
