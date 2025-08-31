@@ -3,9 +3,13 @@ import 'package:flutter/services.dart';
 import 'screens/grid_composer.dart';
 import 'screens/paint_sound.dart';
 import 'screens/melody_builder.dart';
+import 'services/audio_service.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar audio
+  await AudioService.initialize();
   
   // Forzar orientación horizontal para toda la app
   SystemChrome.setPreferredOrientations([
@@ -40,7 +44,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Asegurar orientación horizontal
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -130,19 +133,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Choose your creative mode',
-                      style: TextStyle(
-                        fontSize: 0,
-                        color: Color(0xFF3C4043),
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    
-                    SizedBox(height: 40),
-                    
                     // Opciones en columna para horizontal
                     Column(
                       children: [
@@ -162,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         
-                        SizedBox(height: 1),
+                        SizedBox(height: 20),
                         
                         _buildModeCard(
                           context,
@@ -180,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         
-                        SizedBox(height: 1),
+                        SizedBox(height: 20),
                         
                         _buildModeCard(
                           context,
@@ -198,18 +188,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ],
-                    ),
-                    
-                    SizedBox(height: 40),
-                    
-                    // Footer
-                    Text(
-                      'Made with ♪ for music lovers',
-                      style: TextStyle(
-                        color: Color(0xFF9AA0A6),
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                      ),
                     ),
                   ],
                 ),
@@ -316,5 +294,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    AudioService.dispose();
+    super.dispose();
   }
 }
