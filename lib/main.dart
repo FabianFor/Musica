@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'screens/grid_composer.dart';
 import 'screens/paint_sound.dart';
 import 'screens/melody_builder.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Forzar orientación horizontal para toda la app
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+  
   runApp(MyApp());
 }
 
@@ -15,87 +24,198 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'Roboto',
       ),
       home: HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // Asegurar orientación horizontal
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Header principal
-              Text(
-                'MUSIC MAKER',
-                style: TextStyle(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              Text(
-                'Elige tu modo creativo',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-              ),
-              
-              SizedBox(height: 50),
-              
-              // Opciones de modo
-              _buildModeCard(
-                context,
-                'GRID COMPOSER',
-                'Crea beats y ritmos',
-                Colors.blue,
-                Icons.grid_4x4,
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GridComposer()),
+        child: Row(
+          children: [
+            // Panel izquierdo con logo
+            Container(
+              width: 300,
+              padding: EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF4285F4),
+                    Color(0xFF34A853),
+                  ],
                 ),
               ),
-              
-              SizedBox(height: 20),
-              
-              _buildModeCard(
-                context,
-                'PAINT & SOUND',
-                'Dibuja tu música',
-                Colors.purple,
-                Icons.brush,
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PaintSound()),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo grande
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    child: Icon(
+                      Icons.music_note_rounded,
+                      size: 60,
+                      color: Colors.white,
+                    ),
+                  ),
+                  
+                  SizedBox(height: 24),
+                  
+                  Text(
+                    'MUSIC',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w300,
+                      color: Colors.white,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                  
+                  Text(
+                    'MAKER',
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                  
+                  SizedBox(height: 16),
+                  
+                  Text(
+                    'Create music with colors,\nbeats and melodies',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w400,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Panel derecho con opciones
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Choose your creative mode',
+                      style: TextStyle(
+                        fontSize: 0,
+                        color: Color(0xFF3C4043),
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    
+                    SizedBox(height: 40),
+                    
+                    // Opciones en columna para horizontal
+                    Column(
+                      children: [
+                        _buildModeCard(
+                          context,
+                          'SONG MAKER',
+                          'Create beats and rhythms with a grid',
+                          LinearGradient(
+                            colors: [Color(0xFF4285F4), Color(0xFF1976D2)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          Icons.grid_4x4_rounded,
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => GridComposer()),
+                          ),
+                        ),
+                        
+                        SizedBox(height: 1),
+                        
+                        _buildModeCard(
+                          context,
+                          'PAINT & SOUND',
+                          'Draw your music with colors and sounds',
+                          LinearGradient(
+                            colors: [Color(0xFF9C27B0), Color(0xFF7B1FA2)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          Icons.brush_rounded,
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PaintSound()),
+                          ),
+                        ),
+                        
+                        SizedBox(height: 1),
+                        
+                        _buildModeCard(
+                          context,
+                          'MELODY MAKER',
+                          'Compose melodies with virtual piano',
+                          LinearGradient(
+                            colors: [Color(0xFFFF9800), Color(0xFFF57C00)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          Icons.piano_rounded,
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MelodyBuilder()),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    SizedBox(height: 40),
+                    
+                    // Footer
+                    Text(
+                      'Made with ♪ for music lovers',
+                      style: TextStyle(
+                        color: Color(0xFF9AA0A6),
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              
-              SizedBox(height: 20),
-              
-              _buildModeCard(
-                context,
-                'MELODY MAKER',
-                'Compón melodías',
-                Colors.orange,
-                Icons.piano,
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MelodyBuilder()),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -105,76 +225,94 @@ class HomePage extends StatelessWidget {
     BuildContext context,
     String title,
     String subtitle,
-    Color color,
+    Gradient gradient,
     IconData icon,
     VoidCallback onTap,
   ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 15,
-              offset: Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
-            
-            SizedBox(width: 20),
-            
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      width: double.infinity,
+      height: 80,
+      child: Material(
+        borderRadius: BorderRadius.circular(16),
+        elevation: 6,
+        shadowColor: Colors.black12,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              HapticFeedback.lightImpact();
+              onTap();
+            },
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.25),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
                       color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      size: 24,
                     ),
                   ),
                   
-                  SizedBox(height: 4),
+                  SizedBox(width: 20),
                   
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 14,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        
+                        SizedBox(height: 4),
+                        
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.25),
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 16,
                     ),
                   ),
                 ],
               ),
             ),
-            
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 20,
-            ),
-          ],
+          ),
         ),
       ),
     );

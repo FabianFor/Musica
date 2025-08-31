@@ -1,4 +1,4 @@
-package com.example.laptrix
+package com.example.music_maker
 
 import io.flutter.embedding.android.FlutterActivity
 
